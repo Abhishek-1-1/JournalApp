@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> addUser(@RequestBody User user){
-        userService.addUser(user);
+        userService.saveUser(user);
         return new ResponseEntity<>("User added" , HttpStatus.CREATED);
     }
 
@@ -35,7 +35,7 @@ public class UserController {
         if(userInDB != null){
             userInDB.setUserName(user.getUserName());
             userInDB.setPassword(user.getPassword());
-            userService.addUser(userInDB);
+            userService.saveUser(userInDB);
             return new ResponseEntity<>(user , HttpStatus.OK);
         }
 
