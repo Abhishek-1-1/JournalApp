@@ -24,16 +24,21 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional      // this annotation will consider below as one operation and rollback if any one operation fails
+                        // example and use case of this is setting username null
     public void saveEntry(JournalEntry journalEntry, String userName){
         try {
             User user = userService.findByUserName(userName);
             journalEntry.setDate(LocalDateTime.now());
             journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(journalEntry);
+
+            // below line set the user name as null which will throw exception at runtime and we want rollback functionality
+            // on journalentry stored data
+            user.setUserName(null);
             userService.saveUser(user);
         }catch (Exception e){
             System.out.println(e);
-            throw new RuntimeException("An error occurred while  saving....");
+            throw new RuntimeException("An error occurred while  saving....",e);
         }
     }
 
